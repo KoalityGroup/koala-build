@@ -1,0 +1,9 @@
+{
+    "i-have-index": true,
+    "overrides": {
+        "value-to-override": "override-me"
+    },
+    "sub-layer": {
+        "from-index": true
+    }
+}

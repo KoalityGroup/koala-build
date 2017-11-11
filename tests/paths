@@ -1,0 +1,44 @@
+__venv__
+    build
+        config
+            environment
+                production!
+                staging!
+                testing!
+                development!
+
+            configuration
+                realease!
+                debug!
+
+            target
+                arch
+                    x86!
+                    x64!
+                    ARM!
+
+                os
+                    generic!
+                    windows!
+                    linux!
+                    OSx!
+
+                host
+                    Chrome!
+                    Edge!
+                    Firefox!
+
+            misc
+                no-lint!
+                no-sourcemap!
+                silent!
+                verbose!
+
+            imports
+                no-lint!
+                no-sourcemap!
+                silent!
+                verbose!
+
+            .baseline
+                default!
