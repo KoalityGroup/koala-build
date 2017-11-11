@@ -1,11 +1,12 @@
 export enum LookupObject {
-    Environment,
-    Configuration,
-    TargetOs,
-    TargetArch,
-    TargetHost,
-    Option,
-    Fragment
+    Environment = 'ENVIRONMENT',
+    Configuration = 'CONFIGURATION',
+    TargetOs = 'TARGETOS',
+    TargetArch = 'TARGETARCH',
+    TargetHost = 'TARGETHOST',
+    Option = 'OPTION',
+    Fragment = 'FRAGMENT',
+    Baseline = 'BASELINE'
 }
 
 export interface IConfigLookup {
