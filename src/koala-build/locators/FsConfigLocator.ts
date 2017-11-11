@@ -11,6 +11,36 @@ import { IConfigProvider } from '../providers/ConfigProvider';
 import JsonConfigProvider from '../providers/JsonConfigProvider';
 import LayeredJsonConfigProvider from '../providers/LayeredJsonConfigProvider';
 
+export interface IFsConfigLocatorOptions {
+    paths: {[obj in LookupObject]: string[]};
+}
+
+/**
+ * This function joins together strings into a path using the folllowing rules:
+ *  * for parts P1 and P2, if P1 ends with a forward slash (/) the parts will be path joined
+ *  * for parts P1 and P2, if P1 does not end with a forward slash (/) the parts will be concatenated
+ * 
+ * @param {string[]} parts the parts of the path to join
+ * @returns {string} the parts joined into a path string
+ */
+function joinPathParts(parts: string[]): string {
+    if (parts.length === 0)
+        return '';
+
+    if (parts.length === 1)
+        return parts[0];
+
+    return parts.reduce((acc, next) => {
+        if (acc.length === 0) // Should slice instead?
+            return next;
+
+        if (acc.endsWith('/'))
+            return path.join(acc, next);
+        
+        return acc + next;
+    }, '');
+}
+
 export default class FsConfigLocator implements IConfigLocator {
     private readonly _baseDir: string;
     private readonly _options: IFsConfigLocatorOptions;
@@ -50,66 +80,23 @@ export default class FsConfigLocator implements IConfigLocator {
     }
 
     private resolveLookupObjectPath(lookup: LookupObject): string {
-        switch (lookup) {
-            case LookupObject.Configuration:
-                return this._options.configurationDirName;
+        if (!(lookup in this._options.paths))
+            throw new KoalaError('Lookup object is invalid or unsupported');
 
-            case LookupObject.Environment:
-                return this._options.environmentDirName;
-
-            case LookupObject.Fragment:
-                return this._options.fragmentsDirName;
-
-            case LookupObject.Option:
-                return this._options.optionsDirName;
-
-            case LookupObject.TargetArch:
-                return FsConfigLocator.joinPrefix(
-                    this._options.targetParametersDirPrefix, 
-                    this._options.targetArchDirName);
-
-            case LookupObject.TargetHost:
-                return FsConfigLocator.joinPrefix(
-                    this._options.targetParametersDirPrefix, 
-                    this._options.targetHostDirName);
-
-            case LookupObject.TargetOs:
-                return FsConfigLocator.joinPrefix(
-                    this._options.targetParametersDirPrefix, 
-                    this._options.targetOsDirName);
-        }
-
-        throw new KoalaError('Lookup object is invalid or unsupported');
-    }
-
-    private static joinPrefix(prefix: string, str: string) {
-        if (prefix.endsWith('/'))
-            return path.join(prefix, str);
-
-        return prefix + str;
+        return joinPathParts(this._options.paths[lookup]);
     }
 }
 
-export interface IFsConfigLocatorOptions {
-    environmentDirName: string;
-    configurationDirName: string;
-
-    targetParametersDirPrefix: string;
-    targetOsDirName: string;
-    targetArchDirName: string;
-    targetHostDirName: string;
-    
-    optionsDirName: string;
-    fragmentsDirName: string;
-}
-
+const defaultTargetPreix = 'target/';
 const defaultOptions: IFsConfigLocatorOptions = {
-    environmentDirName: 'environment',
-    configurationDirName: 'configuration',
-    targetParametersDirPrefix: 'targets/',
-    targetOsDirName: 'os',
-    targetArchDirName: 'arch',
-    targetHostDirName: 'host',
-    optionsDirName: 'misc',
-    fragmentsDirName: 'imports'
+    paths: {
+        [LookupObject.Environment]: ['environment'],
+        [LookupObject.Configuration]: ['configuration'],
+        [LookupObject.TargetOs]: [defaultTargetPreix, 'os'],
+        [LookupObject.TargetArch]: [defaultTargetPreix, 'arch'],
+        [LookupObject.TargetHost]: [defaultTargetPreix, 'host'],
+        [LookupObject.Option]: [defaultTargetPreix, 'misc'],
+        [LookupObject.Fragment]: [defaultTargetPreix, 'imports'],
+        [LookupObject.Baseline]: [defaultTargetPreix, '.baseline']
+    }
 };
