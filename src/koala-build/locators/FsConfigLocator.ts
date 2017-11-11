@@ -95,8 +95,8 @@ const defaultOptions: IFsConfigLocatorOptions = {
         [LookupObject.TargetOs]: [defaultTargetPreix, 'os'],
         [LookupObject.TargetArch]: [defaultTargetPreix, 'arch'],
         [LookupObject.TargetHost]: [defaultTargetPreix, 'host'],
-        [LookupObject.Option]: [defaultTargetPreix, 'misc'],
-        [LookupObject.Fragment]: [defaultTargetPreix, 'imports'],
-        [LookupObject.Baseline]: [defaultTargetPreix, '.baseline']
+        [LookupObject.Option]: ['misc'],
+        [LookupObject.Fragment]: ['imports'],
+        [LookupObject.Baseline]: ['.baseline']
     }
 };
