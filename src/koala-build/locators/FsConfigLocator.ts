@@ -12,7 +12,7 @@ import JsonConfigProvider from '../providers/JsonConfigProvider';
 import LayeredJsonConfigProvider from '../providers/LayeredJsonConfigProvider';
 
 export interface IFsConfigLocatorOptions {
-    paths: {[obj in LookupObject]: string[]};
+    paths: {[obj: number]: string[]};
 }
 
 /**
