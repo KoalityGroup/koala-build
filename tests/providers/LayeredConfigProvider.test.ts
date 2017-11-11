@@ -6,7 +6,7 @@ import LayeredJsonConfigProvider from 'providers/LayeredJsonConfigProvider';
 import { CONFIG_PATH } from '../common';
 
 describe('LayeredJsonConfigProvider', () => {
-    describe.skip('#getConfig()', () => {
+    describe('#getConfig()', () => {
         const layersPath = path.join(CONFIG_PATH, 'misc/layered-json');
         const provider = new LayeredJsonConfigProvider(layersPath);
 

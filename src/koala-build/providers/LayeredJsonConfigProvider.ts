@@ -45,7 +45,7 @@ export default class LayeredJsonConfigProvider implements IConfigProvider {
 
     public getConfig(): any {
         const pf = (jpath: string) => JsonConfigProvider.fromFile(jpath);
-        let subfiles = glob.sync('**/*.json');
+        let subfiles = glob.sync('**/*.json', { cwd: this._baseDirectory });
 
         let mergeTarget = { };
         for (let subfile of subfiles) {
