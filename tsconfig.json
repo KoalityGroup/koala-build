@@ -15,10 +15,12 @@
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
-        "target": "es5"
+        "target": "es5",
+        "baseUrl": "src/koala-build"
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*",
+        "./tests/**/*"
     ],
     "exclude": [
         "node_modules"
