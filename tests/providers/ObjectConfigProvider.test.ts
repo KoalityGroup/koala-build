@@ -7,11 +7,28 @@ describe('ObjectConfigProvider', () => {
         it('return the source object', () => {
             const object = { key: 'value' };
             const provider = new ObjectConfigProvider(object);
-            
-            expect(provider.getConfig()).to.be.equal(object);
+
+            expect(provider.getConfig()).to.be.deep.equal(object);
         });
 
-        it.skip('keeps the source object immutable', () => {
+        it('has proper deep clone of the object', () => {
+            const object = { key: { key: { key: { key: 'value' } } } };
+            const provider = new ObjectConfigProvider(object);
+
+            expect(provider.getConfig()).to.be.deep.equal(object);
+        });
+
+        it('maintains the source object reference', () => {
+            const object = { key: 'value' };
+            const provider = new ObjectConfigProvider(object);
+
+            expect(provider.getConfig()).to.be.deep.equal(object);
+
+            object.key = 'another value';
+            expect(provider.getConfig()).to.be.deep.equal(object);
+        });
+
+        it('keeps the source object immutable', () => {
             const object = { key: 'value' };
             const provider = new ObjectConfigProvider(object);
             

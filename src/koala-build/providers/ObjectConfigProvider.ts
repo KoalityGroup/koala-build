@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import KoalaError from '../KoalaError';
 import { IConfigProvider } from './ConfigProvider';
 
@@ -12,6 +14,6 @@ export default class ObjectConfigProvider implements IConfigProvider {
     }
 
     public getConfig() {
-        return this._configObj;
+        return _.cloneDeep(this._configObj);
     }
 }
