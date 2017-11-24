@@ -124,7 +124,7 @@ describe('ShellsLoader', () => {
             let seeds = loader.loadSeeds(buildInfo.none);
 
             expect(seeds).to.have.lengthOf(1);
-            expect(seeds[0]).to.have.any.keys('fromDefault');
+            expect(seeds[0].root.hasChild('fromDefault')).is.true;
         });
 
         it('loads configuration in build string', () => {
@@ -133,7 +133,8 @@ describe('ShellsLoader', () => {
             let seeds = loader.loadSeeds(buildInfo.configuration);
 
             expect(seeds).to.have.lengthOf(1);
-            expect(seeds).to.have.deep.members([{ subject: 'configuration' }]);
+            expect(seeds[0].root.hasChild('subject')).is.true;
+            expect(seeds[0].root.getChild('subject').getValue()).equals('configuration');
         });
     });
 

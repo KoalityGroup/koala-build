@@ -1,6 +1,8 @@
 import KoalaError from '../KoalaError';
 import { IConfigProvider } from './ConfigProvider';
 
+import ConfigTree, { objectToTree } from 'config/ConfigTree';
+
 export default class FuncConfigProvider implements IConfigProvider {
     private readonly _func: () => object;
 
@@ -11,7 +13,7 @@ export default class FuncConfigProvider implements IConfigProvider {
         this._func = configFunc;
     }
 
-    public getConfig() {
-        return this._func();
+    public getConfig(): ConfigTree {
+        return objectToTree(this._func());
     }
 }

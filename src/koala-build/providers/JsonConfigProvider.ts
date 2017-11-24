@@ -2,6 +2,8 @@ import * as fs from 'fs';
 
 import { IConfigProvider } from './ConfigProvider';
 
+import ConfigTree, { objectToTree } from 'config/ConfigTree';
+
 export default class JsonConfigProvider implements IConfigProvider {
     private readonly _json: string;
     private readonly _jsonAsPath: boolean;
@@ -11,7 +13,11 @@ export default class JsonConfigProvider implements IConfigProvider {
         this._jsonAsPath = isPath;
     }
 
-    public getConfig(): any {
+    public getConfig(): ConfigTree {
+        return objectToTree(this.getRawConfig());
+    }
+
+    public getRawConfig(): any {
         const json = this._jsonAsPath 
             ? JsonConfigProvider.readFile(this._json)
             : this._json;

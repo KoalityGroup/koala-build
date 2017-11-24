@@ -11,8 +11,8 @@ describe('JsonConfigProvider', () => {
             const jsonPath = path.join(CONFIG_PATH, 'misc/known-state/index.json');
             const provider = JsonConfigProvider.fromFile(jsonPath);
             
-            expect(provider.getConfig()).to.have.key('check');
-            expect(provider.getConfig()['check']).be.equal(true);
+            expect(provider.getConfig().root.hasChild('check')).is.true;
+            expect(provider.getConfig().root.getChild('check').getValue()).is.true;
         });
 
         it('throws if file does not exists', () => {
@@ -26,8 +26,8 @@ describe('JsonConfigProvider', () => {
             const jsonString = `{ "some-key": 123 }`;
             const provider = JsonConfigProvider.fromJson(jsonString);
 
-            expect(provider.getConfig()).to.have.key('some-key');
-            expect(provider.getConfig()['some-key']).be.equal(123);
+            expect(provider.getConfig().root.hasChild('some-key')).is.true;
+            expect(provider.getConfig().root.getChild('some-key').getValue()).eq(123);
         });
 
         it('throws if inline json is invalid', () => {

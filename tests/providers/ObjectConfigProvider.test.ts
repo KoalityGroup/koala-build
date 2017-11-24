@@ -7,37 +7,30 @@ describe('ObjectConfigProvider', () => {
         it('return the source object', () => {
             const object = { key: 'value' };
             const provider = new ObjectConfigProvider(object);
+            const configNode = provider.getConfig().root;
 
-            expect(provider.getConfig()).to.be.deep.equal(object);
+            expect(configNode.hasChild('key')).is.true;
         });
 
         it('has proper deep clone of the object', () => {
             const object = { key: { key: { key: { key: 'value' } } } };
             const provider = new ObjectConfigProvider(object);
+            const configNode = provider.getConfig().root
+                .getChild('key').getChild('key').getChild('key').getChild('key');
 
-            expect(provider.getConfig()).to.be.deep.equal(object);
+            expect(configNode.getValue()).equals('value');
         });
 
         it('maintains the source object reference', () => {
             const object = { key: 'value' };
             const provider = new ObjectConfigProvider(object);
 
-            expect(provider.getConfig()).to.be.deep.equal(object);
+            expect(provider.getConfig().root.getChild('key').getValue())
+                .equals(object.key);
 
             object.key = 'another value';
-            expect(provider.getConfig()).to.be.deep.equal(object);
-        });
-
-        it('keeps the source object immutable', () => {
-            const object = { key: 'value' };
-            const provider = new ObjectConfigProvider(object);
-            
-            let objectFromProvider = provider.getConfig() as any;
-            let otherObjectFromProvider = provider.getConfig() as any;
-            otherObjectFromProvider.key = 'new-value';
-
-            expect(objectFromProvider.key).equals('value');
-            expect(object.key).equals('value');
+            expect(provider.getConfig().root.getChild('key').getValue())
+                .equals(object.key);
         });
     });
 });

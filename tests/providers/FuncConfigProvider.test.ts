@@ -8,7 +8,7 @@ describe('FuncConfigProvider', () => {
             const func = () => ({ a: 'hello world' });
             const provider = new FuncConfigProvider(func);
             
-            expect(provider.getConfig()).to.have.key('a');
+            expect(provider.getConfig().root.hasChild('a')).is.true;
         });
 
         it('invokes the function every time', () => {
@@ -20,14 +20,14 @@ describe('FuncConfigProvider', () => {
             }
 
             const provider = new FuncConfigProvider(func(0));
-            const firstTime = provider.getConfig() as { b: number };
-            const secondTime = provider.getConfig() as { b: number };
+            const firstTime = provider.getConfig();
+            const secondTime = provider.getConfig();
 
-            expect(firstTime).to.have.key('b');
-            expect(firstTime.b).to.equal(0);
+            expect(firstTime.root.hasChild('b')).is.true;
+            expect(firstTime.root.getChild('b').getValue()).to.equal(0);
 
-            expect(secondTime).to.have.key('b');
-            expect(secondTime.b).to.equal(1);
+            expect(secondTime.root.hasChild('b')).is.true;
+            expect(secondTime.root.getChild('b').getValue()).to.equal(1);
         });
     });
 });

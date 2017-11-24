@@ -6,12 +6,13 @@ import * as _ from 'lodash';
 import { IConfigProvider } from './ConfigProvider';
 import JsonConfigProvider from './JsonConfigProvider';
 
-function importLayeredJson(fileNameFragment: string, baseDir: string, pf: (path: string) => IConfigProvider) {
-    const layers = parseLayers(fileNameFragment);
-    let actuallFileName = path.resolve(baseDir, fileNameFragment);
+import ConfigTree, { objectToTree } from 'config/ConfigTree';
 
-    let provider = pf(actuallFileName);
-    let tailObject = provider.getConfig();
+function importLayeredJson(fileNameFragment: string, baseDir: string, pf: (path: string) => any) {
+    const layers = parseLayers(fileNameFragment);
+    let actualFileName = path.resolve(baseDir, fileNameFragment);
+
+    let tailObject = pf(actualFileName);
 
     let currentObject = tailObject;
     for (let layer of layers.reverse()) {
@@ -43,8 +44,8 @@ export default class LayeredJsonConfigProvider implements IConfigProvider {
         this._baseDirectory = baseDirectory;
     }
 
-    public getConfig(): any {
-        const pf = (jpath: string) => JsonConfigProvider.fromFile(jpath);
+    public getConfig(): ConfigTree {
+        const pf = (jpath: string) => JsonConfigProvider.fromFile(jpath).getRawConfig();
         let subfiles = glob.sync('**/*.json', { cwd: this._baseDirectory });
 
         let mergeTarget = { };
@@ -52,6 +53,6 @@ export default class LayeredJsonConfigProvider implements IConfigProvider {
             _.merge(mergeTarget, importLayeredJson(subfile, this._baseDirectory, pf));
         }
 
-        return mergeTarget;
+        return objectToTree(mergeTarget);
     }
 }

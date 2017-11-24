@@ -11,25 +11,27 @@ describe('LayeredJsonConfigProvider', () => {
         const provider = new LayeredJsonConfigProvider(layersPath);
 
         it('reads layers from disk', () => {
-            const resultJson = provider.getConfig() as any;
+            const configTree = provider.getConfig();
 
-            expect(resultJson).to.have.any.keys('i-have-index');
-            expect(resultJson['i-have-index']).be.equal(true);
+            expect(configTree.root.hasChild('i-have-index')).is.true;
+            expect(configTree.root.getChild('i-have-index').getValue()).is.true;
         });
 
         it('merge object from all sources', () => {
-            const resultJson = provider.getConfig() as any;
+            const configTree = provider.getConfig();
+            const subLayer = configTree.root.getChild('sub-layer');
 
-            expect(resultJson['sub-layer']).to.have.all.keys(
-                ['from-named-dir', 'from-index', 'from-named-json']
-            );
+            for (let key of ['from-named-dir', 'from-index', 'from-named-json'])
+                expect(subLayer.hasChild(key)).is.true;
         });
 
         it('named directories keys override named json keys', () => {
-            const resultJson = provider.getConfig() as any;
+            const configTree = provider.getConfig();
+            const configNode = configTree.root
+                .getChild('overrides')
+                .getChild('value-to-override');
 
-            expect(resultJson.overrides).to.have.all.keys('value-to-override');
-            expect(resultJson.overrides['value-to-override']).to.equal('ok');
+            expect(configNode.getValue()).to.equal('ok');
         });
     });
 });

@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import KoalaError from '../KoalaError';
 import { IConfigProvider } from './ConfigProvider';
 
+import ConfigTree, { objectToTree } from 'config/ConfigTree';
+
 export default class ObjectConfigProvider implements IConfigProvider {
     private readonly _configObj: object;
 
@@ -13,7 +15,7 @@ export default class ObjectConfigProvider implements IConfigProvider {
         this._configObj = configObj;
     }
 
-    public getConfig() {
-        return _.cloneDeep(this._configObj);
+    public getConfig(): ConfigTree {
+        return objectToTree(_.cloneDeep(this._configObj));
     }
 }

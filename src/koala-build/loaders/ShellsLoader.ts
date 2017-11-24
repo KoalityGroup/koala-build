@@ -7,6 +7,8 @@ import { IConfigLocator } from '../locators/ConfigLocator';
 
 import configLookup, { IConfigLookup, LookupObject } from '../locators/configLookup';
 
+import ConfigTree from 'config/ConfigTree';
+
 export interface ILoaderShell {
     name: string;
     locator: IConfigLocator;
@@ -54,7 +56,7 @@ export default class ShellsLoader implements IConfigLoader {
         this._shells = [];
     }
 
-    public loadSeeds(buildInfo: IBuildInfo): object[] {
+    public loadSeeds(buildInfo: IBuildInfo): ConfigTree[] {
         if (this._shells.length === 0)
             return [];
 
@@ -63,7 +65,7 @@ export default class ShellsLoader implements IConfigLoader {
         return this.loadShells(lookups, true);
     }
 
-    public loadPartial(lookup: IConfigLookup): object[] {
+    public loadPartial(lookup: IConfigLookup): ConfigTree[] {
         return this.loadShells([lookup], false);
     }
 
@@ -78,7 +80,7 @@ export default class ShellsLoader implements IConfigLoader {
         return [ cfConfiguration, cfEnvironment, cfTargetArch, cfTargetOs, cfTargetHost, ...cfOptions ];
     }
 
-    private loadShells(lookups: IConfigLookup[], loadDefaults: boolean): object[] {
+    private loadShells(lookups: IConfigLookup[], loadDefaults: boolean): ConfigTree[] {
         // Here we run the lookup against all the shells.
         // All shells should execute, shell are not fallback chains!
 
@@ -95,7 +97,7 @@ export default class ShellsLoader implements IConfigLoader {
             .filter(obj => obj !== null); // do not return nulls
     }
 
-    private lookupSelect(shell: ILoaderShell, lookup: IConfigLookup): object {
+    private lookupSelect(shell: ILoaderShell, lookup: IConfigLookup): ConfigTree {
         let rootLookup = shell.locator.locate(lookup);
         if (rootLookup === null && shell.fallbackLocator)
             rootLookup = shell.fallbackLocator.locate(lookup);
